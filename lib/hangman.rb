@@ -34,22 +34,34 @@ puts correct_guesses.join
 until game_over
   guess = player_guess
   if guesses.include?(guess)
-    puts 'you already guessed that'
+    puts '***you already guessed that***'
+    puts "wrong guesses: #{wrong_guesses}"
+    puts correct_guesses.join
     next
   end
 
   guesses.push(guess).sort!
-  puts "your guesses so far: #{guesses}"
+
   if word_to_guess.include?(guess)
 
     word_to_guess.each_with_index do |letter, index|
       correct_guesses[index] = guess if letter == guess
     end
   else
+    puts 'test'
     wrong_guesses.push(guess)
   end
 
+  # puts "your guesses so far: #{guesses}"
+  puts "wrong guesses: #{wrong_guesses}"
   puts correct_guesses.join
-  game_over = true if (correct_guesses == word_to_guess) || (wrong_guesses.length == 8)
+  if correct_guesses == word_to_guess
+    puts 'congrats!'
+    game_over = true
+  end
+
+  if wrong_guesses.length == 8
+    puts "I'm sorry the word was #{word_to_guess.join}"
+    game_over = true
+  end
 end
-puts 'Congratulations!!!'
