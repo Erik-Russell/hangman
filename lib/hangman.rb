@@ -43,25 +43,26 @@ until game_over
   guesses.push(guess).sort!
 
   if word_to_guess.include?(guess)
-
     word_to_guess.each_with_index do |letter, index|
       correct_guesses[index] = guess if letter == guess
     end
   else
-    puts 'test'
-    wrong_guesses.push(guess)
+    wrong_guesses.push(guess).sort!
   end
 
   # puts "your guesses so far: #{guesses}"
-  puts "wrong guesses: #{wrong_guesses}"
-  puts correct_guesses.join
   if correct_guesses == word_to_guess
-    puts 'congrats!'
+    puts "\ncongrats!"
+    puts "You guessed #{word_to_guess.join} correctly!!"
     game_over = true
   end
 
   if wrong_guesses.length == 8
     puts "I'm sorry the word was #{word_to_guess.join}"
     game_over = true
+  end
+  unless game_over == true
+    puts "\nwrong guesses: #{wrong_guesses}"
+    puts correct_guesses.join
   end
 end
