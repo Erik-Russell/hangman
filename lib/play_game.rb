@@ -41,27 +41,21 @@ class PlayGame
       next unless one_letter?(input)
 
       @guess = input
-      if already_guessed?(@guess)
-        puts 'you already guesses that'
-        next
-      end
+      next if already_guessed?(@guess)
+
       @guesses.push(input)
-      # puts "you entered #{@guess} into #{@guesses}"
       return input
     end
   end
 
-  # check if letter has already been guessed
   def already_guessed?(letter)
     true if @guesses.include?(letter)
   end
 
-  # add letter to appropriate guess array
   def correct?(guess)
     if @word_to_guess.include?(guess)
       @word_to_guess.each_with_index do |letter, index|
         @correct_guesses[index] = guess if letter == guess
-        # puts 'correct'
       end
     else
       @wrong_guesses.push(guess).sort!
@@ -70,22 +64,19 @@ class PlayGame
   end
 
   def lose?
-    puts "you lose, the word was #{@word_to_guess.join}" if @wrong_guesses.length == 8
+    return unless @wrong_guesses.length == 8
+
+    puts "you lose, the word was #{@word_to_guess.join}"
+    true
   end
 
   def player_turn
     @guess = player_guess
-
-    # puts "check:: guess=#{@guess} guesses_ar=#{@guesses}"
-
     correct?(@guess)
     puts
     puts @correct_guesses.join
     puts "wrong guesses: #{@wrong_guesses}"
-    if lose?
-      puts 'lost'
-      return true
-    end
+    return true if lose?
 
     return unless @correct_guesses == @word_to_guess
 
