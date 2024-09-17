@@ -18,7 +18,7 @@ module BasicSerialize
   def unserialize(string)
     json = IO.new(IO.sysopen(string)).gets
     obj = @@serializer.parse(json)
-    obj.keys.each do |key|
+    obj.each_key do |key|
       instance_variable_set(key, obj[key])
     end
   end

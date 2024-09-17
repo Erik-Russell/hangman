@@ -11,10 +11,4 @@ class Dictionary
       @dictionary << line.strip if line.chomp.length.between?(5, 12)
     end
   end
-
-  # def load_dictionary(file)
-  #   File.foreach(@file) do |line|
-  #     @dictionary << line.strip if line.chomp.length.between?(5, 12)
-  #   end
-  # end
 end

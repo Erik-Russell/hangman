@@ -15,30 +15,9 @@ class PlayGame
     @wrong_guesses = []
     @guesses = []
     @score = 0
-    # @dictionary = []
     @guess = ''
     @choice = ''
   end
-
-  # load dictionary with word between 5 and 12 chars long
-  # def load_dictionary(file)
-  #   File.foreach(file) do |line|
-  #     @dictionary << line.strip if line.chomp.length.between?(5, 12)
-  #   end
-  # end
-
-  # def to_json(*_args)
-  #   JSON.dump({
-  #               word_to_guess: @word_to_guess,
-  #               wrong_guesses: @wrong_guesses,
-  #               correct_guesses: @correct_guesses,
-  #               guesses: @guesses
-  #             })
-  # end
-
-  # def self.from_json
-  #   puts 'test'
-  # end
 
   # return randowm word as array of letters
   def new_word
@@ -53,24 +32,27 @@ class PlayGame
     true if letter.match?(/^[A-Za-z]{1}$/)
   end
 
+  def only_letters?(word)
+    true if word.match?(/\A[A-Za-z]*\z/)
+  end
+
   def message_to_player
     puts "To save your game type 'save'"
     puts "To load a game type 'load'"
     puts 'To continue enter a letter as your guess'
   end
 
+  def filename_set
+    loop do
+      puts 'enter filename'
+      input = gets.chomp
+      return input if only_letters?(input)
+    end
+  end
+
   def save_game
     save_file = serialize
-    Dir.mkdir('game_saves') unless Dir.exist?('game_saves')
-
-    puts 'enter a file name (using only letters) to save as:'
-    input = gets.chomp
-    filename = if input.match?(/^[A-Za-z]*/)
-                 "game_saves/#{input}.json"
-               else
-                 '0000'
-               end
-
+    filename = "game_saves/#{filename_set}.json"
     File.open(filename, 'w') do |file|
       file.puts save_file
     end
@@ -78,15 +60,14 @@ class PlayGame
   end
 
   def load_game
-    puts 'enter the file to load:'
-    input = gets.chomp
-    filename = "game_saves/#{input}.json" if input.match?(/^[A-Za-z]*/)
+    filename = "game_saves/#{filename_set}.json"
 
     unserialize(filename)
     puts "#{filename} loaded"
   end
 
   def save_load_handler(choice)
+    Dir.mkdir('game_saves') unless Dir.exist?('game_saves')
     save_game if choice == 'save'
     load_game if choice == 'load'
     puts 'handled'
@@ -157,7 +138,3 @@ class PlayGame
     end
   end
 end
-
-# make a new method that takes the user input
-# this will pass the input to either player_guess
-# or save/load game method
