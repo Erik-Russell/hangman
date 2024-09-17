@@ -37,7 +37,9 @@ class PlayGame
   end
 
   def message_to_player
-    puts "To save your game type 'save'"
+    puts "\n\n\n\n  #{@correct_guesses.join}"
+    puts "wrong guesses: #{@wrong_guesses}" unless @wrong_guesses.empty?
+    puts "\nTo save your game type 'save'"
     puts "To load a game type 'load'"
     puts 'To continue enter a letter as your guess'
   end
@@ -114,9 +116,9 @@ class PlayGame
 
     @guess = player_guess
     correct?(@guess)
-    puts
-    puts @correct_guesses.join
-    puts "wrong guesses: #{@wrong_guesses}"
+    # puts
+    # puts @correct_guesses.join
+    # puts "wrong guesses: #{@wrong_guesses}"
     return true if lose?
 
     return unless @correct_guesses == @word_to_guess
