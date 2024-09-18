@@ -14,7 +14,7 @@ class PlayGame
     @correct_guesses = []
     @wrong_guesses = []
     @guesses = []
-    @score = 0
+    @turn = 0
     @guess = ''
     @choice = ''
   end
@@ -36,12 +36,15 @@ class PlayGame
     true if word.match?(/\A[A-Za-z]*\z/)
   end
 
-  def message_to_player
-    puts "\n\n\n\n  #{@correct_guesses.join}"
-    puts "wrong guesses: #{@wrong_guesses}" unless @wrong_guesses.empty?
-    puts "\nTo save your game type 'save'"
+  def start_message
     puts "To load a game type 'load'"
-    puts 'To continue enter a letter as your guess'
+    puts "To play type 'play'"
+  end
+
+  def turn_message
+    puts "\n\nEnter a letter as a guess or type 'save' to save your game"
+    puts "\n\n  #{@correct_guesses.join}"
+    puts "wrong guesses: #{@wrong_guesses}" unless @wrong_guesses.empty?
   end
 
   def filename_set
@@ -62,6 +65,8 @@ class PlayGame
   end
 
   def load_game
+    files = Dir.entries('./game_saves').select { |f| File.file? File.join('./game_saves', f) }
+    puts files
     filename = "game_saves/#{filename_set}.json"
 
     unserialize(filename)
@@ -72,15 +77,19 @@ class PlayGame
     Dir.mkdir('game_saves') unless Dir.exist?('game_saves')
     save_game if choice == 'save'
     load_game if choice == 'load'
-    puts 'handled'
   end
 
   # get player guess
   def player_guess
     loop do
-      @guess = @choice
-      next if already_guessed?(@guess)
+      turn_message
+      input = gets.chomp
+      save_load_handler(input) if input == 'save'
+      next unless one_letter?(input)
 
+      next if already_guessed?(input)
+
+      @guess = input
       @guesses.push(@guess)
       return @guess
     end
@@ -112,13 +121,10 @@ class PlayGame
   end
 
   def player_turn
-    return unless player_choice
-
+    player_choice if @turn.zero?
+    @turn = 1
     @guess = player_guess
     correct?(@guess)
-    # puts
-    # puts @correct_guesses.join
-    # puts "wrong guesses: #{@wrong_guesses}"
     return true if lose?
 
     return unless @correct_guesses == @word_to_guess
@@ -128,12 +134,13 @@ class PlayGame
   end
 
   def player_choice
-    message_to_player
+    start_message
     @choice = gets.chomp.downcase
-    if one_letter?(@choice)
+    if @choice == 'play'
+      new_word
       true
-    elsif @choice == 'save' || @choice == 'load'
-      puts 'here the file would save or load'
+    elsif @choice == 'load'
+      puts 'choose one of the following saves:'
       save_load_handler(@choice)
     else
       puts 'invalid entry'

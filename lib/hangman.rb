@@ -2,8 +2,6 @@
 
 require_relative 'play_game'
 
-filepath = 'google-10000-english-noswears.txt'
-
 puts "Let's play a game of hangman!!!\n\n"
 wants_to_play = true
 game_over = false
@@ -11,8 +9,6 @@ game_over = false
 if wants_to_play
   loop do
     game = PlayGame.new
-    # game.load_dictionary(filepath)
-    game.new_word
     game_over = game.player_turn until game_over
     puts 'Do you want to play again?'
     input = gets.chomp
